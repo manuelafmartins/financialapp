@@ -5,7 +5,7 @@ import plotly.express as px
 import datetime
 
 # Configuração da página
-st.set_page_config(page_title="Calculadora de Investimentos", page_icon="💶", layout="centered")
+st.set_page_config(page_title="Calculadora de Investimentos", page_icon="💶", layout="wide")
 
 # Estilo personalizado com CSS
 st.markdown("""
