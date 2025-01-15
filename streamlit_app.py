@@ -118,7 +118,7 @@ menu = st.sidebar.selectbox(
 )
 
 if menu == textos[idioma]["titulo"]:
-    st.title(textos[idioma]["titulo"])
+    st.markdown("<h1 style='text-align: center; color: #4CAF50;'>💸 {}</h1>".format(textos[idioma]["titulo"]), unsafe_allow_html=True)
     
     # Entradas do usuário organizadas em duas colunas
     col1, col2 = st.columns(2)
@@ -126,32 +126,33 @@ if menu == textos[idioma]["titulo"]:
     with col1:
         investimento_inicial = st.number_input(f"{textos[idioma]['investimento_inicial']} ({simbolo_moeda})", min_value=0.0, value=20000.0, step=100.0)
         contribuicao_anual = st.number_input(f"{textos[idioma]['contribuicao_anual']} ({simbolo_moeda})", min_value=0.0, value=5000.0, step=100.0)
-        taxa_juros = st.number_input(textos[idioma]["taxa_juros"], min_value=0.0, value=5.0, step=0.1) / 100
+        taxa_juros = st.slider("📈 {}".format(textos[idioma]["taxa_juros"]), min_value=0.0, max_value=20.0, value=5.0, step=0.1)
     
     with col2:
         contribuicao_mensal = st.number_input(f"{textos[idioma]['contribuicao_mensal']} ({simbolo_moeda})", min_value=0.0, value=0.0, step=50.0)
-        duracao_anos = st.number_input(textos[idioma]["duracao_investimento"], min_value=1, value=5)
-        taxa_imposto = st.number_input(textos[idioma]["taxa_imposto"], min_value=0.0, value=0.0, step=0.1) / 100
-    
-    taxa_inflacao = st.number_input(textos[idioma]["taxa_inflacao"], min_value=0.0, value=3.0, step=0.1) / 100
+        duracao_anos = st.slider("⏳ {}".format(textos[idioma]["duracao_investimento"]), min_value=1, max_value=50, value=5)
+        taxa_inflacao = st.slider("📉 {}".format(textos[idioma]["taxa_inflacao"]), min_value=0.0, max_value=10.0, value=3.0, step=0.1)
 
-    if st.button(textos[idioma]["calcular"]):
+    if st.button("🚀 {}".format(textos[idioma]["calcular"])):
         saldo = investimento_inicial
-        saldo_ajustado = investimento_inicial
         historico = []
-        
-        for ano in range(1, duracao_anos + 1):
-            saldo += contribuicao_anual
-            saldo *= (1 + taxa_juros)
-            saldo -= saldo * taxa_imposto
-            saldo_ajustado = saldo / ((1 + taxa_inflacao) ** ano)
-            historico.append({"Ano": ano, "Saldo": saldo, "Saldo Ajustado": saldo_ajustado})
-        
+        with st.spinner('🔄 Calculando...'):
+            for ano in range(1, duracao_anos + 1):
+                saldo += contribuicao_anual
+                saldo *= (1 + (taxa_juros / 100))
+                saldo_ajustado = saldo / ((1 + (taxa_inflacao / 100)) ** ano)
+                historico.append({"Ano": ano, "Saldo": saldo, "Saldo Ajustado": saldo_ajustado})
+
         df_resultado = pd.DataFrame(historico)
-        st.subheader(textos[idioma]["resultado"])
-        st.write(f"{textos[idioma]['saldo_final']}: {simbolo_moeda} {saldo:,.2f}")
-        st.write(f"{textos[idioma]['saldo_ajustado']}: {simbolo_moeda} {saldo_ajustado:,.2f}")
+        saldo_final = df_resultado['Saldo'].iloc[-1]
+        saldo_ajustado_final = df_resultado['Saldo Ajustado'].iloc[-1]
         
-        st.subheader(textos[idioma]["evolucao_anual"])
-        st.dataframe(df_resultado)
-        st.line_chart(df_resultado.set_index("Ano")["Saldo"])
+        col1, col2 = st.columns(2)
+        col1.metric("📊 {}".format(textos[idioma]["saldo_final"]), f"{simbolo_moeda} {saldo_final:,.2f}")
+        col2.metric("💡 {}".format(textos[idioma]["saldo_ajustado"]), f"{simbolo_moeda} {saldo_ajustado_final:,.2f}")
+
+        fig = px.line(df_resultado, x='Ano', y='Saldo', title='📈 {}'.format(textos[idioma]["evolucao_anual"]))
+        fig.update_layout(template='plotly_white')
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.success("✅ Cálculo concluído!")
