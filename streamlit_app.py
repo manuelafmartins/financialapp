@@ -40,19 +40,24 @@ menu = st.sidebar.selectbox(
 if menu == "Juros Compostos":
     st.markdown("<h1 style='text-align: center; color: #007BFF;'>Calculadora de Juros Compostos</h1>", unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         investimento_inicial = st.number_input("💼 Investimento Inicial (€)", min_value=0.0, value=20000.0, step=100.0)
-        contribuicao_anual = st.number_input("📅 Contribuição Anual (€)", min_value=0.0, value=5000.0, step=100.0)
         taxa_juros = st.slider("📈 Taxa de Juros Anual (%)", min_value=0.0, max_value=20.0, value=5.0, step=0.1)
+        
+        
         granularidade = st.radio("📊 Granularidade dos Resultados", ["Anual", "Mensal"])
     
     with col2:
-        contribuicao_mensal = st.number_input("📆 Contribuição Mensal (€)", min_value=0.0, value=0.0, step=50.0)
+        contribuicao_anual = st.number_input("📅 Contribuição Anual (€)", min_value=0.0, value=5000.0, step=100.0)
         data_inicio = st.date_input("📅 Data de Início", datetime.date.today())
         data_fim = st.date_input("📅 Data de Fim", datetime.date.today() + datetime.timedelta(days=365*5))
         contribuicao_periodo = st.selectbox("💸 Contribuir no início ou fim do período?", ["Início", "Fim"])
+    
+    with col3:
+        contribuicao_mensal = st.number_input("📆 Contribuição Mensal (€)", min_value=0.0, value=0.0, step=50.0)
+
 
     if st.button("🚀 Calcular Crescimento"):
         saldo = investimento_inicial
