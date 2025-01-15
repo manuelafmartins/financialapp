@@ -29,18 +29,17 @@ st.markdown("""
 
 # Menu lateral para seleção de calculadoras
 menu = st.sidebar.selectbox(
-    "📊 Selecione a Calculadora",
+    "1. Selecione a Análise",
     [
-        "Calculadora de Juros Compostos",
-        "Calculadora de Juros Simples",
-        "Calculadora de ROI"
+        "Juros Compostos",
+        "Juros Simples",
+        "ROI"
     ]
 )
 
-if menu == "Calculadora de Juros Compostos":
-    st.markdown("<h1 style='text-align: center; color: #007BFF;'>💶 Calculadora de Juros Compostos</h1>", unsafe_allow_html=True)
+if menu == "Juros Compostos":
+    st.markdown("<h1 style='text-align: center; color: #007BFF;'>Calculadora de Juros Compostos</h1>", unsafe_allow_html=True)
     
-    # Entradas do usuário
     col1, col2 = st.columns(2)
     
     with col1:
