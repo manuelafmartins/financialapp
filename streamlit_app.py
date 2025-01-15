@@ -38,7 +38,7 @@ menu = st.sidebar.selectbox(
 )
 
 if menu == "Juros Compostos":
-    st.markdown("<h1 style='text-align: center; color: #007BFF;'>Calculadora de Juros Compostos</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #007BFF;'>Juros Compostos</h1>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     
@@ -52,11 +52,12 @@ if menu == "Juros Compostos":
     with col2:
         contribuicao_anual = st.number_input("📅 Contribuição Anual (€)", min_value=0.0, value=5000.0, step=100.0)
         data_inicio = st.date_input("📅 Data de Início", datetime.date.today())
-        data_fim = st.date_input("📅 Data de Fim", datetime.date.today() + datetime.timedelta(days=365*5))
+        
         contribuicao_periodo = st.selectbox("💸 Contribuir no início ou fim do período?", ["Início", "Fim"])
     
     with col3:
         contribuicao_mensal = st.number_input("📆 Contribuição Mensal (€)", min_value=0.0, value=0.0, step=50.0)
+        data_fim = st.date_input("📅 Data de Fim", datetime.date.today() + datetime.timedelta(days=365*5))
 
 
     if st.button("🚀 Calcular Crescimento"):
@@ -89,12 +90,15 @@ if menu == "Juros Compostos":
         st.write(f"**Juros Totais:** € {juros_totais:,.2f}")
         st.write(f"**Poder de Compra Ajustado pela Inflação:** € {poder_compra_ajustado:,.2f}")
         
-        # Tabela de resultados
-        st.subheader("📅 Tabela de Crescimento")
-        st.dataframe(df_resultado)
-        
-        # Gráfico interativo
-        fig = px.area(df_resultado, x='Data', y='Saldo', title='📈 Evolução do Saldo')
-        fig.update_traces(line_color='#007BFF')
-        fig.update_layout(template='plotly_white', xaxis_title='Data', yaxis_title='Saldo (€)')
-        st.plotly_chart(fig, use_container_width=True)
+        col1, col2 = st.columns(2)
+
+        with col1:
+            # Tabela de resultados
+            st.subheader("📅 Tabela de Crescimento")
+            st.dataframe(df_resultado)
+        with col2:
+            # Gráfico interativo
+            fig = px.area(df_resultado, x='Data', y='Saldo', title='📈 Evolução do Saldo')
+            fig.update_traces(line_color='#007BFF')
+            fig.update_layout(template='plotly_white', xaxis_title='Data', yaxis_title='Saldo (€)')
+            st.plotly_chart(fig, use_container_width=True)
